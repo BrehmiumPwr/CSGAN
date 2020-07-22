@@ -1,0 +1,181 @@
+from data import *
+
+def cars(options):
+    valid_colors = [x for x in range(0, 11)]
+    if options["semi_use_all_classes"]:
+        relevant_voc_classes = [x for x in range(1, 21)]
+    else:
+        relevant_voc_classes = [7]
+    [relevant_voc_classes.remove(int(x)) for x in options["semi_ignore_classes"]]
+    '''options["noobject_dataset"] = ColorDataset("datasets/no_cars",
+                                               batch_size=1,
+                                               randomize_size=True,
+                                               random_flip=True,
+                                               repeat_indefinitely=True,
+                                               square_pad=False,
+                                               random_crop=True,
+                                               random_brightness=True,
+                                               random_contrast=True,
+                                               random_saturation=True,
+                                               crop_to_size_factor=True,
+                                               image_size=options["image_size"],
+                                               size_factor=4,
+                                               resize_in_advance=True,
+                                               rebalance_colors=False)'''
+    options["generator_dataset"] = ImageDataset("datasets/cars_unlabelled",
+                                                batch_size=1,
+                                                randomize_size=True,
+                                                random_flip=True,
+                                                repeat_indefinitely=True,
+                                                square_pad=False,
+                                                random_crop=False,
+                                                random_brightness=True,
+                                                random_contrast=True,
+                                                random_saturation=True,
+                                                crop_to_size_factor=True,
+                                                image_size=options["image_size"],
+                                                size_factor=4,
+                                                resize_in_advance=True)
+    options["discriminator_dataset"] = ColorDataset("datasets/cars",
+                                                    batch_size=1,
+                                                    randomize_size=True,
+                                                    random_flip=True,
+                                                    repeat_indefinitely=True,
+                                                    square_pad=False,
+                                                    random_crop=False,
+                                                    random_brightness=True,
+                                                    random_contrast=True,
+                                                    random_saturation=True,
+                                                    crop_to_size_factor=True,
+                                                    image_size=options["image_size"],
+                                                    size_factor=4,
+                                                    valid_colors=valid_colors,
+                                                    resize_in_advance=True,
+                                                    rebalance_colors=True)
+
+    if options["semisupervised"]:
+        options["supervision_dataset"] = VOC2012Data(path="datasets/VOC2012",
+                                                     image_set="train",
+                                                     batch_size=1,
+                                                     randomize_size=True,
+                                                     random_flip=True,
+                                                     repeat_indefinitely=True,
+                                                     square_pad=False,
+                                                     random_crop=False,
+                                                     random_brightness=True,
+                                                     random_contrast=True,
+                                                     random_saturation=True,
+                                                     crop_to_size_factor=True,
+                                                     image_size=options["image_size"],
+                                                     size_factor=4,
+                                                     relevant_classes=relevant_voc_classes,
+                                                     resize_in_advance=False)
+        return options, [lambda x, threshold=None: CarsWithMasksData.test_on_mask_data(x, devkit_path="datasets/cars_masks"),
+                         VOC2012Data("datasets/VOC2012", image_set="val",
+                                                     relevant_classes=relevant_voc_classes,
+                                                     image_size=options["image_size"],
+                                                     resize_in_advance=False).test_on_data]
+    else:
+        #mscoco_data = MSCOCOData(path="datasets/coco", image_set="train2017")
+        return options, [lambda x, threshold=None: CarsWithMasksData.test_on_mask_data(x, devkit_path="datasets/cars_masks")]#,
+                         #lambda x, threshold: mscoco_data.test_on_data(x, threshold=threshold)]
+
+
+def alpaca(options):
+    valid_colors = [x for x in range(0, 4)]
+    '''options["noobject_dataset"] = ColorDataset("datasets/no_cars",
+                                               batch_size=1,
+                                               randomize_size=True,
+                                               random_flip=True,
+                                               repeat_indefinitely=True,
+                                               square_pad=False,
+                                               random_crop=True,
+                                               random_brightness=True,
+                                               random_contrast=True,
+                                               random_saturation=True,
+                                               crop_to_size_factor=True,
+                                               image_size=options["image_size"],
+                                               size_factor=4,
+                                               resize_in_advance=True,
+                                               rebalance_colors=False)'''
+    options["generator_dataset"] = ImageDataset("datasets/openimagesalpacafiltered",
+                                                batch_size=1,
+                                                randomize_size=True,
+                                                random_flip=True,
+                                                repeat_indefinitely=True,
+                                                square_pad=False,
+                                                random_crop=False,
+                                                random_brightness=True,
+                                                random_contrast=True,
+                                                random_saturation=True,
+                                                crop_to_size_factor=True,
+                                                image_size=options["image_size"],
+                                                size_factor=4,
+                                                resize_in_advance=True)
+    options["discriminator_dataset"] = ColorDataset("datasets/openimagesalpacafiltered",
+                                                    batch_size=1,
+                                                    randomize_size=True,
+                                                    random_flip=True,
+                                                    repeat_indefinitely=True,
+                                                    square_pad=False,
+                                                    random_crop=False,
+                                                    random_brightness=True,
+                                                    random_contrast=True,
+                                                    random_saturation=True,
+                                                    crop_to_size_factor=True,
+                                                    image_size=options["image_size"],
+                                                    size_factor=4,
+                                                    valid_colors=valid_colors,
+                                                    resize_in_advance=True,
+                                                    rebalance_colors=True)
+    return options, []
+
+
+def handbag(options):
+    valid_colors = [x for x in range(0, 11)]
+    '''options["noobject_dataset"] = ColorDataset("datasets/no_cars",
+                                               batch_size=1,
+                                               randomize_size=True,
+                                               random_flip=True,
+                                               repeat_indefinitely=True,
+                                               square_pad=False,
+                                               random_crop=True,
+                                               random_brightness=True,
+                                               random_contrast=True,
+                                               random_saturation=True,
+                                               crop_to_size_factor=True,
+                                               image_size=options["image_size"],
+                                               size_factor=4,
+                                               resize_in_advance=True,
+                                               rebalance_colors=False)'''
+    options["generator_dataset"] = ImageDataset("datasets/openimageshandbagfiltered",
+                                                batch_size=1,
+                                                randomize_size=True,
+                                                random_flip=True,
+                                                repeat_indefinitely=True,
+                                                square_pad=False,
+                                                random_crop=False,
+                                                random_brightness=True,
+                                                random_contrast=True,
+                                                random_saturation=True,
+                                                crop_to_size_factor=True,
+                                                image_size=options["image_size"],
+                                                size_factor=4,
+                                                resize_in_advance=True)
+    options["discriminator_dataset"] = ColorDataset("datasets/openimageshandbagfiltered",
+                                                    batch_size=1,
+                                                    randomize_size=True,
+                                                    random_flip=True,
+                                                    repeat_indefinitely=True,
+                                                    square_pad=False,
+                                                    random_crop=False,
+                                                    random_brightness=True,
+                                                    random_contrast=True,
+                                                    random_saturation=True,
+                                                    crop_to_size_factor=True,
+                                                    image_size=options["image_size"],
+                                                    size_factor=4,
+                                                    valid_colors=valid_colors,
+                                                    resize_in_advance=True,
+                                                    rebalance_colors=True)
+    return options, []
